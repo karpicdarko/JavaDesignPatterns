@@ -107,9 +107,23 @@ public class GeometryDialog extends JDialog {
 	public GeometryDialog(String shape) {
 		this();
 		if(shape.equals("rectangle")) {
-			lblFirst.setText("Sirina");
-			lblSecond.setText("Visina");
+			lblFirst.setText("Width");
+			lblSecond.setText("Height");
 			
+		}
+		else if (shape.equals("circle")) {
+			lblFirst.setText("Radius");
+			lblSecond.setVisible(false);
+			txtSecond.setVisible(false);
+		}
+		else if (shape.equals("donut")) {
+			lblFirst.setText("Inner Radius");
+			lblSecond.setText("Outer Radius");
+		}
+		else if (shape.equals("hexagon")) {
+			lblFirst.setText("Radius");
+			lblSecond.setVisible(false);
+			txtSecond.setVisible(false);
 		}
 		setVisible(true);
 	}
