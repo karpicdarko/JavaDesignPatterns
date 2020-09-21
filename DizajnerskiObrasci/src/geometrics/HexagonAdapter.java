@@ -13,9 +13,13 @@ public class HexagonAdapter extends Shape{
 		
 	}
 
-	public HexagonAdapter(int x, int y, int r, boolean selected) {
+	public HexagonAdapter(int x, int y, int r, boolean selected, Color borderColor, Color fillColor) {
 		this(x,y,r);
 		this.setSelected(selected);
+		this.setBorderColor(borderColor);
+		this.setFillColor(fillColor);
+		this.hexagon.setAreaColor(getFillColor());
+		this.hexagon.setBorderColor(getBorderColor());
 	}
 	
 
@@ -51,5 +55,10 @@ public class HexagonAdapter extends Shape{
 
 	public void setHexagon(Hexagon hexagon) {
 		this.hexagon = hexagon;
+	}
+	
+	public void setSelected(boolean selected) {
+		super.setSelected(selected);
+		this.hexagon.setSelected(selected);
 	}
 }

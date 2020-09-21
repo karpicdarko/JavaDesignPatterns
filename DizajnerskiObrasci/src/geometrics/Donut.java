@@ -23,9 +23,11 @@ public class Donut extends Circle{
 		this.innerRadius = innerRadius;
 	}
 
-	public Donut(Point center, int outerRadius, int innerRadius, boolean selected) {
+	public Donut(Point center, int outerRadius, int innerRadius, boolean selected, Color borderColor, Color fillColor) {
 		this(center, outerRadius, innerRadius);
 		setSelected(selected);
+		setBorderColor(borderColor);
+		setFillColor(fillColor);
 	}
 
 	public void draw(Graphics g) {
@@ -34,23 +36,21 @@ public class Donut extends Circle{
 		Area donut=new Area(outerCircle);
 		donut.subtract(new Area(innerCircle));
 		Graphics2D graphics2D =(Graphics2D)g;
-		
-		graphics2D.setColor(Color.black);
+		graphics2D.setColor(getFillColor());
 		graphics2D.fill(donut);
-		
-		/*super.draw(g);
-		g.setColor(Color.WHITE);
-		g.fillOval(center.getX() - innerRadius, center.getY() - innerRadius, 2 * innerRadius, 2 * innerRadius);
-		g.setColor(Color.BLACK);
-		g.drawOval(center.getX() - innerRadius, center.getY() - innerRadius, 2 * innerRadius, 2 * innerRadius);
+		graphics2D.setColor(getBorderColor());
+		graphics2D.drawOval(this.getCenter().getX()-this.getInnerRadius(),this.getCenter().getY()-this.getInnerRadius(),this.getInnerRadius()*2,this.getInnerRadius()*2);
+		graphics2D.drawOval(this.getCenter().getX()-this.getR(),this.getCenter().getY()-this.getR(),this.getR()*2,this.getR()*2);
 		if (isSelected()) {
 			g.setColor(Color.BLUE);
-			g.drawRect(this.getCenter().getX() - innerRadius - 3, this.getCenter().getY() - 3, 6, 6);
-			g.drawRect(this.getCenter().getX() + innerRadius - 3, this.getCenter().getY() - 3, 6, 6);
-			g.drawRect(this.getCenter().getX() - 3, this.getCenter().getY() - innerRadius - 3, 6, 6);
-			g.drawRect(this.getCenter().getX() - 3, this.getCenter().getY() + innerRadius - 3, 6, 6);
+			g.drawRect(center.getX() - r - 3, center.getY() - 3, 6, 6);
+			g.drawRect(center.getX() + r - 3, center.getY() - 3, 6, 6);
+			g.drawRect(center.getX() - 3, center.getY() - r - 3, 6, 6);
+			g.drawRect(center.getX() - 3, center.getY() + r - 3, 6, 6);
+			g.drawRect(center.getX() - 3, center.getY() - 3, 6, 6);
 			
-		}*/
+			
+		}
 	}
 
 	public String toString() {

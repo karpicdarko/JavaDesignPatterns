@@ -1,12 +1,14 @@
 package mvc;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JToggleButton;
 import java.awt.GridBagLayout;
@@ -14,6 +16,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class DrawingFrame extends JFrame{
@@ -27,6 +31,8 @@ public class DrawingFrame extends JFrame{
 	private JRadioButton rdbtnCircle = new JRadioButton("Circle");
 	private JRadioButton rdbtnDonut = new JRadioButton("Donut");
 	private JRadioButton rdbtnHexagon = new JRadioButton("Hexagon");
+	private final JButton btnFillColor = new JButton("Fill Color");
+	private final JButton btnBorderColor = new JButton("Border Color");
 	
 	public DrawingFrame() {
 		view.addMouseListener(new MouseAdapter() {
@@ -41,9 +47,9 @@ public class DrawingFrame extends JFrame{
 		getContentPane().add(westPanel, BorderLayout.WEST);
 		GridBagLayout gbl_westPanel = new GridBagLayout();
 		gbl_westPanel.columnWidths = new int[]{121, 0};
-		gbl_westPanel.rowHeights = new int[]{23, 23, 23, 23, 23, 23, 23, 0};
+		gbl_westPanel.rowHeights = new int[]{23, 23, 23, 23, 23, 23, 23, 0, 0, 0};
 		gbl_westPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_westPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_westPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		westPanel.setLayout(gbl_westPanel);
 		
 	
@@ -103,10 +109,36 @@ public class DrawingFrame extends JFrame{
 		
 		buttonGroup.add(rdbtnHexagon);
 		GridBagConstraints gbc_rdbtnHexagon = new GridBagConstraints();
+		gbc_rdbtnHexagon.insets = new Insets(0, 0, 5, 0);
 		gbc_rdbtnHexagon.anchor = GridBagConstraints.WEST;
 		gbc_rdbtnHexagon.gridx = 0;
 		gbc_rdbtnHexagon.gridy = 6;
 		westPanel.add(rdbtnHexagon, gbc_rdbtnHexagon);
+		
+		GridBagConstraints gbc_btnFillColor = new GridBagConstraints();
+		gbc_btnFillColor.insets = new Insets(0, 0, 5, 0);
+		gbc_btnFillColor.gridx = 0;
+		gbc_btnFillColor.gridy = 7;
+		btnFillColor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Color fillColor = JColorChooser.showDialog(getContentPane(), "Choose fill color", controller.getFillColor()); 
+				controller.setFillColor(fillColor);
+				btnFillColor.setBackground(fillColor);
+			}
+		});
+		westPanel.add(btnFillColor, gbc_btnFillColor);
+		
+		GridBagConstraints gbc_btnBorderColor = new GridBagConstraints();
+		gbc_btnBorderColor.gridx = 0;
+		gbc_btnBorderColor.gridy = 8;
+		btnBorderColor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Color borderColor = JColorChooser.showDialog(getContentPane(), "Choose border color", controller.getBorderColor());
+				controller.setBorderColor(borderColor);
+				btnBorderColor.setBackground(borderColor);
+			}
+		});
+		westPanel.add(btnBorderColor, gbc_btnBorderColor);
 	}
 	
 	public DrawingView getView() {

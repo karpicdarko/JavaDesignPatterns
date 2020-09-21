@@ -18,9 +18,10 @@ public class Line extends Shape{
 		this.endPoint = endPoint;
 	}
 	
-	public Line(Point startPoint, Point endPoint, boolean selected) {
+	public Line(Point startPoint, Point endPoint, boolean selected, Color borderColor) {
 		this(startPoint, endPoint);
 		setSelected(selected);
+		setBorderColor(borderColor);
 	}
 
 	@Override
@@ -32,7 +33,7 @@ public class Line extends Shape{
 	
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(this.getColor());
+		g.setColor(this.getBorderColor());
 		g.drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
 		if(isSelected()) {
 			g.setColor(Color.BLUE);

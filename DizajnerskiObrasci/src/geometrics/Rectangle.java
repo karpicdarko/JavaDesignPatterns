@@ -20,9 +20,11 @@ public class Rectangle extends Shape{
 		this.height = height;
 	}
 
-	public Rectangle(Point upperLeftPoint, int width, int height, boolean selected) {
+	public Rectangle(Point upperLeftPoint, int width, int height, boolean selected, Color borderColor, Color fillColor) {
 		this(upperLeftPoint, width, height);
 		setSelected(selected);
+		setBorderColor(borderColor);
+		setFillColor(fillColor);
 	}
 
 	@Override
@@ -41,9 +43,9 @@ public class Rectangle extends Shape{
 	
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(this.getColor());
+		g.setColor(this.getFillColor());
 		g.fillRect(upperLeftPoint.getX(), upperLeftPoint.getY(), width, height);
-		g.setColor(Color.BLACK);
+		g.setColor(getBorderColor());
 		g.drawRect(upperLeftPoint.getX(), upperLeftPoint.getY(), width, height);
 		if (isSelected()) {
 			g.setColor(Color.BLUE);

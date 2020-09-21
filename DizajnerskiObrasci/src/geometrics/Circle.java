@@ -19,9 +19,11 @@ public class Circle extends Shape {
 		this.r = r;
 	}
 
-	public Circle(Point center, int r, boolean selected) {
+	public Circle(Point center, int r, boolean selected, Color borderColor, Color fillColor) {
 		this(center, r);
 		setSelected(selected);
+		setBorderColor(borderColor);
+		setFillColor(fillColor);
 	}
 	
 
@@ -40,9 +42,9 @@ public class Circle extends Shape {
 	}
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(this.getColor());
+		g.setColor(this.getFillColor());
 		g.fillOval(center.getX()-r, center.getY()-r, 2*r, r+r);
-		g.setColor(Color.BLACK);
+		g.setColor(getBorderColor());
 		g.drawOval(center.getX()-r, center.getY()-r, 2*r, r+r);
 		if (isSelected()) {
 			g.setColor(Color.BLUE);

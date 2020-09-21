@@ -19,9 +19,10 @@ public class Point extends Shape{
 		this.y = y;
 	}
 
-	public Point(int x, int y, boolean selected) {
+	public Point(int x, int y, boolean selected, Color borderColor) {
 		this(x,y);
 		setSelected(selected);
+		setBorderColor(borderColor);
 	}
 	
 	@Override
@@ -41,13 +42,13 @@ public class Point extends Shape{
 	
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(this.getColor());
+		g.setColor(this.getBorderColor());
 		g.drawLine(x-2, y, x+2, y);
 		g.drawLine(x, y-2, x, y+2);
-		
 		if(isSelected()) {
 			g.setColor(Color.BLUE);
 			g.drawRect(x-3, y-3, 6, 6);
+			
 			
 		}
 			

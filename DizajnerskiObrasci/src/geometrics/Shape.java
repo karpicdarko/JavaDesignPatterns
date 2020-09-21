@@ -5,7 +5,9 @@ import java.awt.Graphics;
 
 public abstract class Shape implements Comparable, Moveable {
 	private boolean selected;
-	private Color color;
+	private Color fillColor;
+	private Color borderColor;
+	
 	
 	public Shape() {
 		
@@ -26,12 +28,22 @@ public abstract class Shape implements Comparable, Moveable {
 		this.selected = selected;
 	}
 
-	public Color getColor() {
-		return color;
+	public Color getFillColor() {
+		return fillColor;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setFillColor(Color fillColor) {
+		this.fillColor = fillColor;
 	}
+
+	public Color getBorderColor() {
+		return borderColor;
+	}
+
+	public void setBorderColor(Color borderColor) {
+		this.borderColor = borderColor;
+	}
+
+	
 	
 }
