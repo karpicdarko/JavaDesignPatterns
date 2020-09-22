@@ -26,7 +26,19 @@ public class Rectangle extends Shape{
 		setBorderColor(borderColor);
 		setFillColor(fillColor);
 	}
-
+	
+	public Rectangle clone() {
+		
+		Rectangle cloneRectangle = new Rectangle();
+		cloneRectangle.setHeight(this.getHeight());
+		cloneRectangle.setWidth(this.getWidth());
+		cloneRectangle.setUpperLeftPoint(upperLeftPoint.clone());
+		cloneRectangle.setBorderColor(this.getBorderColor());
+		cloneRectangle.setFillColor(this.getFillColor());
+		cloneRectangle.setSelected(this.isSelected());
+		return cloneRectangle;
+	}
+	
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
@@ -88,9 +100,8 @@ public class Rectangle extends Shape{
 		return width;
 	}
 
-	public void setWidth(int width) throws Exception {
-		if(width<=0)
-			throw new Exception("Sirina mora biti veca od nule");
+	public void setWidth(int width) {
+
 		this.width = width;
 	}
 
@@ -99,9 +110,7 @@ public class Rectangle extends Shape{
 		return height;
 	}
 
-	public void setHeight(int height) throws Exception {
-		if(height<=0)
-			throw new Exception("Visina mora biti veca od nule");
+	public void setHeight(int height) {
 		this.height = height;
 	}
 }

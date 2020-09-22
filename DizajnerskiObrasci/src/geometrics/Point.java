@@ -85,6 +85,15 @@ public class Point extends Shape{
 		double d = Math.sqrt(dX * dX + dY * dY);
 		return d;
 	}
+	
+	public Point clone() {
+		Point clonePoint = new Point();
+		clonePoint.setX(this.getX());
+		clonePoint.setY(this.getY());
+		clonePoint.setBorderColor(this.getBorderColor());
+		clonePoint.setSelected(this.isSelected());
+		return clonePoint;
+	}
 
 	public int getX() {
 		return x;

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 
 import geometrics.Point;
 
+
 public class Line extends Shape{
 	private Point startPoint;
 	private Point endPoint;
@@ -24,6 +25,16 @@ public class Line extends Shape{
 		setBorderColor(borderColor);
 	}
 
+	public Line clone() {
+		Line cloneLine = new Line(new Point(), new Point());
+		cloneLine.getStartPoint().setX(this.getStartPoint().getX());
+		cloneLine.getStartPoint().setY(this.getStartPoint().getY());
+		cloneLine.getEndPoint().setX(this.getEndPoint().getX());
+		cloneLine.getEndPoint().setY(this.getEndPoint().getY());
+		cloneLine.setBorderColor(this.getBorderColor());
+		return cloneLine;
+	}
+	
 	@Override
 	public void moveBy(int x, int y) {
 		// TODO Auto-generated method stub

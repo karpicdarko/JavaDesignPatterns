@@ -24,9 +24,21 @@ public class Circle extends Shape {
 		setSelected(selected);
 		setBorderColor(borderColor);
 		setFillColor(fillColor);
-	}
+	} 
 	
 
+	public Circle clone() {
+		
+		Circle cloneCircle = new Circle();
+		cloneCircle.setCenter(this.getCenter().clone());
+		cloneCircle.setBorderColor(this.getBorderColor());
+		cloneCircle.setFillColor(this.getFillColor());
+		cloneCircle.setSelected(this.isSelected());
+		cloneCircle.setR(this.getR());
+		return cloneCircle;
+				
+	}
+	
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
@@ -90,9 +102,7 @@ public class Circle extends Shape {
 		return r;
 	}
 
-	public void setR(int r) throws Exception{
-		if(r<=0)
-			throw new Exception("radius mora biti veci od nule");
+	public void setR(int r) {
 		this.r = r;
 	}
 

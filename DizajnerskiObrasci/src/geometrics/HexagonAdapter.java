@@ -22,6 +22,10 @@ public class HexagonAdapter extends Shape{
 		this.hexagon.setBorderColor(getBorderColor());
 	}
 	
+	public HexagonAdapter clone() {
+		HexagonAdapter cloneHexagon = new HexagonAdapter(this.getHexagon().getX(), this.getHexagon().getY(), this.getHexagon().getR(), this.getHexagon().isSelected(), this.getHexagon().getBorderColor(), this.getHexagon().getAreaColor());
+		return cloneHexagon;
+	}
 
 	@Override
 	public int compareTo(Object arg0) {

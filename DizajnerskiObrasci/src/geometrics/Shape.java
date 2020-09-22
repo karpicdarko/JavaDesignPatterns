@@ -3,7 +3,7 @@ package geometrics;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public abstract class Shape implements Comparable, Moveable {
+public abstract class Shape implements Comparable, Moveable, Cloneable {
 	private boolean selected;
 	private Color fillColor;
 	private Color borderColor;

@@ -30,6 +30,17 @@ public class Donut extends Circle{
 		setFillColor(fillColor);
 	}
 
+	public Donut clone() {
+		Donut cloneDonut = new Donut();
+		cloneDonut.setBorderColor(this.getBorderColor());
+		cloneDonut.setFillColor(this.getFillColor());
+		cloneDonut.setCenter(this.getCenter().clone());
+		cloneDonut.setInnerRadius(this.getInnerRadius());
+		cloneDonut.setR(this.getR());
+		cloneDonut.setSelected(this.isSelected());
+		return cloneDonut;
+	}
+	
 	public void draw(Graphics g) {
 		Ellipse2D outerCircle =new Ellipse2D.Double(this.getCenter().getX()-this.getR(),this.getCenter().getY()-this.getR(),this.getR()*2,this.getR()*2);
 		Ellipse2D innerCircle=new Ellipse2D.Double(this.getCenter().getX()-this.getInnerRadius(),this.getCenter().getY()-this.getInnerRadius(),this.getInnerRadius()*2,this.getInnerRadius()*2);
@@ -69,7 +80,7 @@ public class Donut extends Circle{
 		return innerRadius;
 	}
 
-	public void setInnerRadius(int innerRadius) throws Exception {
+	public void setInnerRadius(int innerRadius) {
 		
 		this.innerRadius = innerRadius;
 	}
