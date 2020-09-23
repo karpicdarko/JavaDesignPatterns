@@ -259,6 +259,42 @@ public class DrawingController {
 
 			}
 	}
+	
+	public void toBack() {
+		if (model.getSelectedShapes().size() == 1 && model.getShapes().indexOf(model.getSelectedShapes().get(0)) > 0) {
+			CmdToBack cmd = new CmdToBack(model.getShapes(), model.getShapes().indexOf(model.getSelectedShapes().get(0)));
+			cmd.execute();
+			frame.getView().repaint();
+			
+		}
+	}
+	
+	public void toFront() {
+		if (model.getSelectedShapes().size() == 1 && model.getShapes().indexOf(model.getSelectedShapes().get(0)) < model.getShapes().size()-1) {
+			CmdToFront cmd = new CmdToFront(model.getShapes(), model.getShapes().indexOf(model.getSelectedShapes().get(0)));
+			cmd.execute();
+			frame.getView().repaint();
+			
+		}
+	}
+	
+	public void bringToBack() {
+		if (model.getSelectedShapes().size() == 1 && model.getShapes().indexOf(model.getSelectedShapes().get(0)) > 0) {
+			CmdBringToBack cmd = new CmdBringToBack(model.getShapes(), model.getShapes().indexOf(model.getSelectedShapes().get(0)));
+			cmd.execute();
+			frame.getView().repaint();
+			
+		}
+	}
+	
+	public void bringToFront() {
+		if (model.getSelectedShapes().size() == 1 && model.getShapes().indexOf(model.getSelectedShapes().get(0)) < model.getShapes().size()-1) {
+			CmdBringToFront cmd = new CmdBringToFront(model.getShapes(), model.getShapes().indexOf(model.getSelectedShapes().get(0)));
+			cmd.execute();
+			frame.getView().repaint();
+			
+		}
+	}
 
 	public void mouseClicked(MouseEvent arg0) {
 		int x = arg0.getX();

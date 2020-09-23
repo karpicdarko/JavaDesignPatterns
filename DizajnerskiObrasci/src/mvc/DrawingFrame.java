@@ -37,6 +37,10 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 	private final JButton btnBorderColor = new JButton("Border Color");
 	private final JButton btnModify = new JButton("Modify");
 	private final JButton btnDelete = new JButton("Delete");
+	private final JButton btnToBack = new JButton("To Back");
+	private final JButton btnToFront = new JButton("To Front");
+	private final JButton btnBringToBack = new JButton("Bring To Back");
+	private final JButton btnBringToFront = new JButton("Bring to Front");
 	
 	public DrawingFrame() {
 		view.addMouseListener(new MouseAdapter() {
@@ -64,9 +68,9 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 		getContentPane().add(westPanel, BorderLayout.WEST);
 		GridBagLayout gbl_westPanel = new GridBagLayout();
 		gbl_westPanel.columnWidths = new int[]{121, 0};
-		gbl_westPanel.rowHeights = new int[]{23, 23, 23, 23, 23, 23, 23, 0, 0, 0, 0, 0};
+		gbl_westPanel.rowHeights = new int[]{23, 23, 23, 23, 23, 23, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_westPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_westPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_westPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		westPanel.setLayout(gbl_westPanel);
 		
 	
@@ -165,9 +169,53 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 		westPanel.add(btnModify, gbc_btnModify);
 		
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
+		gbc_btnDelete.insets = new Insets(0, 0, 5, 0);
 		gbc_btnDelete.gridx = 0;
 		gbc_btnDelete.gridy = 10;
 		westPanel.add(btnDelete, gbc_btnDelete);
+		
+		GridBagConstraints gbc_btnToBack = new GridBagConstraints();
+		gbc_btnToBack.insets = new Insets(0, 0, 5, 0);
+		gbc_btnToBack.gridx = 0;
+		gbc_btnToBack.gridy = 11;
+		btnToBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.toBack();
+			}
+		});
+		westPanel.add(btnToBack, gbc_btnToBack);
+		
+		GridBagConstraints gbc_btnToFront = new GridBagConstraints();
+		gbc_btnToFront.insets = new Insets(0, 0, 5, 0);
+		gbc_btnToFront.gridx = 0;
+		gbc_btnToFront.gridy = 12;
+		btnToFront.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.toFront();
+			}
+		});
+		westPanel.add(btnToFront, gbc_btnToFront);
+		
+		GridBagConstraints gbc_btnBringToBack = new GridBagConstraints();
+		gbc_btnBringToBack.insets = new Insets(0, 0, 5, 0);
+		gbc_btnBringToBack.gridx = 0;
+		gbc_btnBringToBack.gridy = 13;
+		btnBringToBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.bringToBack();
+			}
+		});
+		westPanel.add(btnBringToBack, gbc_btnBringToBack);
+		
+		GridBagConstraints gbc_btnBringToFront = new GridBagConstraints();
+		gbc_btnBringToFront.gridx = 0;
+		gbc_btnBringToFront.gridy = 14;
+		btnBringToFront.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.bringToFront();
+			}
+		});
+		westPanel.add(btnBringToFront, gbc_btnBringToFront);
 	}
 	
 	public DrawingView getView() {
