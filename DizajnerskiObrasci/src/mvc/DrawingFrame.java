@@ -86,6 +86,8 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 			}
 		});
 		getBtnModify().setVisible(false);
+		getBtnUndo().setVisible(false);
+		getBtnRedo().setVisible(false);
 		
 		
 		JPanel westPanel = new JPanel();
@@ -411,11 +413,24 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 	public void setListModel(DefaultListModel<String> listModel) {
 		this.listModel = listModel;
 	}
+	
+	public JButton getBtnUndo() {
+		return btnUndo;
+	}
+
+	public JButton getBtnRedo() {
+		return btnRedo;
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("delete")) {
-			getBtnDelete().setVisible((boolean)arg0.getNewValue());
+			if(controller.getModel().getSelectedShapes().size()  > 0) {
+				getBtnDelete().setVisible((boolean)arg0.getNewValue());
+			} else {
+				getBtnDelete().setVisible((boolean)arg0.getOldValue());
+			}
+			
 		} else if (arg0.getPropertyName().equals("modify")) {
 			if(controller.getModel().getSelectedShapes().size() == 1) {
 				getBtnModify().setVisible((boolean)arg0.getNewValue());
@@ -424,8 +439,18 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 			}
 			
 		} else if (arg0.getPropertyName().equals("redo")) {
-			
+			if(controller.getCommandsReverse().size() > 0) {
+				getBtnRedo().setVisible((boolean)arg0.getNewValue());
+			} else {
+				getBtnRedo().setVisible((boolean)arg0.getOldValue());
+			}
 		}  else if (arg0.getPropertyName().equals("undo")) {
+			if(controller.getCommandsNormal().size() > 0) {
+				getBtnUndo().setVisible((boolean)arg0.getNewValue());
+			} else {
+				getBtnUndo().setVisible((boolean)arg0.getOldValue());
+			}
+				
 			
 		}
 			

@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -14,7 +13,7 @@ import commands.*;
 import dialogs.GeometryDialog;
 import dialogs.ModificationDialog;
 import geometrics.*;
-import commands.*;
+
 
 
 
@@ -49,131 +48,39 @@ public class DrawingController {
 		
 		for (int i = model.getShapes().size() - 1; i >= 0; i--) {
 			if(model.getShapes().get(i).contains(x,y) && !model.getShapes().get(i).isSelected()) {
-				selectShape(model.getShapes().get(i));
+				/*selectShape(model.getShapes().get(i));*/
+				CmdSelect select = new CmdSelect(model.getShapes().get(i), model);
+				commandsNormal.push(select);
+				select.execute();
 				if(model.getShapes().get(i) instanceof HexagonAdapter) {
 					frame.getListModel().addElement("Select Hexagon "  + model.getShapes().get(i).toString());
 				} else
 					frame.getListModel().addElement("Select " + model.getShapes().get(i).getClass().getSimpleName() + ", " + model.getShapes().get(i).toString());
 				propertyChangeSupport.firePropertyChange("delete", false, true);
 				propertyChangeSupport.firePropertyChange("modify", false, true);
+				propertyChangeSupport.firePropertyChange("undo", false, true);
+				propertyChangeSupport.firePropertyChange("redo", false, true);
 				break;
 			}
 			else if (model.getShapes().get(i).contains(x,y) && model.getShapes().get(i).isSelected()) {
-				deselectShape(model.getShapes().get(i));
+				
+				CmdDeselect deselect = new CmdDeselect(model.getShapes().get(i), model);
+				commandsNormal.push(deselect);
+				deselect.execute();
 				if(model.getShapes().get(i) instanceof HexagonAdapter) {
 					frame.getListModel().addElement("Deselect Hexagon "  + model.getShapes().get(i).toString());
 				} else
 					frame.getListModel().addElement("Deslect " + model.getShapes().get(i).getClass().getSimpleName() + ", " + model.getShapes().get(i).toString());
-				if(model.getSelectedShapes().size() == 1) {
-					propertyChangeSupport.firePropertyChange("modify", false, true);
-					propertyChangeSupport.firePropertyChange("delete", false, true);
-				} else if (model.getSelectedShapes().size() > 1) {
-					propertyChangeSupport.firePropertyChange("delete", false, true);
-				} else {
-					propertyChangeSupport.firePropertyChange("modify", true, false);
-					propertyChangeSupport.firePropertyChange("delete", true, false);
-				}
+				propertyChangeSupport.firePropertyChange("modify", false, true);
+				propertyChangeSupport.firePropertyChange("delete", false, true);
+				propertyChangeSupport.firePropertyChange("undo", false, true);
+				propertyChangeSupport.firePropertyChange("redo", false, true);
 				break;
 			}
 		}
 		frame.getView().repaint();
 	}
 	
-	private void selectShape(Shape selected) {
-		if(selected instanceof Point) {
-			Point oldState = (Point)selected;
-			Point newState = oldState.clone();
-			newState.setSelected(true);
-			CmdUpdatePoint cmdUpdate = new CmdUpdatePoint(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		}else if(selected instanceof Line) {
-			Line oldState = (Line)selected;
-			Line newState = oldState.clone();
-			newState.setSelected(true);
-			CmdUpdateLine cmdUpdate = new CmdUpdateLine(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof Rectangle) {
-			Rectangle oldState = (Rectangle) selected;
-			Rectangle newState = oldState.clone();
-			newState.setSelected(true);
-			CmdUpdateRectangle cmdUpdate = new CmdUpdateRectangle(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof Circle) {
-			Circle oldState = (Circle) selected;
-			Circle newState = oldState.clone();
-			newState.setSelected(true);
-			CmdUpdateCircle cmdUpdate = new CmdUpdateCircle(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof Donut) { 
-			Donut oldState = (Donut) selected;
-			Donut newState = oldState.clone();
-			newState.setSelected(true);
-			CmdUpdateDonut cmdUpdate = new CmdUpdateDonut(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof HexagonAdapter) {
-			HexagonAdapter oldState = ((HexagonAdapter) selected);
-			HexagonAdapter newState = oldState.clone();
-			newState.setSelected(true);
-			CmdUpdateHexagon cmdUpdate = new CmdUpdateHexagon(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		}
-		
-		model.getSelectedShapes().add(selected);
-	}
-	
-	private void deselectShape(Shape selected) {
-		if(selected instanceof Point) {
-			Point oldState = (Point)selected;
-			Point newState = oldState.clone();
-			newState.setSelected(false);
-			CmdUpdatePoint cmdUpdate = new CmdUpdatePoint(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		}else if(selected instanceof Line) {
-			Line oldState = (Line)selected;
-			Line newState = oldState.clone();
-			newState.setSelected(false);
-			CmdUpdateLine cmdUpdate = new CmdUpdateLine(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof Rectangle) {
-			Rectangle oldState = (Rectangle) selected;
-			Rectangle newState = oldState.clone();
-			newState.setSelected(false);
-			CmdUpdateRectangle cmdUpdate = new CmdUpdateRectangle(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof Circle) {
-			Circle oldState = (Circle) selected;
-			Circle newState = oldState.clone();
-			newState.setSelected(false);
-			CmdUpdateCircle cmdUpdate = new CmdUpdateCircle(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof Donut) { 
-			Donut oldState = (Donut) selected;
-			Donut newState = oldState.clone();
-			newState.setSelected(false);
-			CmdUpdateDonut cmdUpdate = new CmdUpdateDonut(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		} else if(selected instanceof HexagonAdapter) {
-			HexagonAdapter oldState = ((HexagonAdapter) selected);
-			HexagonAdapter newState = oldState.clone();
-			newState.setSelected(false);
-			CmdUpdateHexagon cmdUpdate = new CmdUpdateHexagon(oldState, newState);
-			commandsNormal.push(cmdUpdate);
-			cmdUpdate.execute();
-		}
-		
-		model.getSelectedShapes().remove(selected);
-	}
 	
 	public void delete() {
 		if (model.getSelectedShapes().size() > 0) {
@@ -187,8 +94,10 @@ public class DrawingController {
 					frame.getListModel().addElement(removeCmd.toString());
 				}
 				model.setSelectedShapes(new ArrayList<Shape>());
-				propertyChangeSupport.firePropertyChange("delete", true, false);
-				propertyChangeSupport.firePropertyChange("modify", true, false);
+				propertyChangeSupport.firePropertyChange("delete", false, true);
+				propertyChangeSupport.firePropertyChange("modify", false, true);
+				propertyChangeSupport.firePropertyChange("undo", false, true);
+				propertyChangeSupport.firePropertyChange("redo", false, true);
 				frame.repaint();
 			}
 		} else {
@@ -287,6 +196,8 @@ public class DrawingController {
 					
 					hexagonModify.dispose();
 				}
+				propertyChangeSupport.firePropertyChange("undo", false, true);
+				propertyChangeSupport.firePropertyChange("redo", false, true);
 				frame.getView().repaint();
 
 			}
@@ -301,6 +212,8 @@ public class DrawingController {
 			frame.getView().repaint();
 			
 		}
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 	}
 	
 	public void toFront() {
@@ -312,6 +225,8 @@ public class DrawingController {
 			frame.getView().repaint();
 			
 		}
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 	}
 	
 	public void bringToBack() {
@@ -323,6 +238,8 @@ public class DrawingController {
 			frame.getView().repaint();
 			
 		}
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 	}
 	
 	public void bringToFront() {
@@ -334,6 +251,8 @@ public class DrawingController {
 			frame.getView().repaint();
 			
 		}
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 	}
 	
 	public void undo() {
@@ -344,6 +263,9 @@ public class DrawingController {
 		commandsNormal.pop();
 		frame.getListModel().addElement("Undo");
 		propertyChangeSupport.firePropertyChange("modify", false, true);
+		propertyChangeSupport.firePropertyChange("delete", false, true);
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 		frame.getView().repaint();
 	}
 	
@@ -354,6 +276,10 @@ public class DrawingController {
 		commandsNormal.push(commandsReverse.peek());
 		commandsReverse.pop();
 		frame.getListModel().addElement("Redo");
+		propertyChangeSupport.firePropertyChange("modify", false, true);
+		propertyChangeSupport.firePropertyChange("delete", false, true);
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 		frame.getView().repaint();
 	}
 
@@ -455,6 +381,8 @@ public class DrawingController {
 			
 			hexagonDialog.dispose();
 		}
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 		frame.getView().repaint();
 		
 	}
@@ -493,6 +421,14 @@ public class DrawingController {
 
 	public DrawingModel getModel() {
 		return model;
+	}
+
+	public Stack<Command> getCommandsNormal() {
+		return commandsNormal;
+	}
+
+	public Stack<Command> getCommandsReverse() {
+		return commandsReverse;
 	}
 	
 	
