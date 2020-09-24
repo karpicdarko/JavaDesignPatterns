@@ -4,11 +4,22 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import Strategy.SaveLog;
+import Strategy.SaveManager;
+import Strategy.SavePainting;
 import commands.*;
 import dialogs.GeometryDialog;
 import dialogs.ModificationDialog;
@@ -29,6 +40,7 @@ public class DrawingController {
 	private PropertyChangeSupport propertyChangeSupport;
 	private Stack<Command> commandsNormal = new Stack<Command>();
 	private Stack<Command> commandsReverse = new Stack<Command>();
+	private Queue<String> loggComm = new LinkedList<String>();
 	
 
 	
@@ -282,7 +294,92 @@ public class DrawingController {
 		propertyChangeSupport.firePropertyChange("redo", false, true);
 		frame.getView().repaint();
 	}
-
+	
+	public void save() {
+		if (model.getShapes().size() == 0) {
+			JOptionPane.showMessageDialog(null, "You haven't draw anythig!", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		JFileChooser fileCh = new JFileChooser();
+		fileCh.setDialogTitle("Specify the location where you want to save your drawing");
+		fileCh.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		
+		
+		if(fileCh.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
+			
+			SaveManager strategy = new SaveManager();
+			SaveLog saveLog = new SaveLog();
+			SavePainting painting = new SavePainting();
+			
+			String log = "";
+			
+			for (int i = 0; i < frame.getListModel().getSize(); i++) {
+				log = log + frame.getListModel().get(i) + "\n";
+			}
+			
+			saveLog.setLog(log);
+			strategy.setStrategy(saveLog);
+			strategy.save(fileCh.getSelectedFile().getAbsolutePath() + "\\" + frame.getTxtFileName().getText() + ".txt");
+			
+			painting.setShapes(model.getShapes());
+			strategy.setStrategy(painting);
+			strategy.save(fileCh.getSelectedFile().getAbsolutePath() + "\\" + frame.getTxtFileName().getText() + ".bin");
+			
+		}
+	}
+	public void loadPainting() {
+		JFileChooser fileCh = new JFileChooser();
+		fileCh.setDialogTitle("Specify the painting you want to open");
+		fileCh.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		
+		if(fileCh.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+			
+			try {
+				FileInputStream fis = new FileInputStream(fileCh.getSelectedFile().getAbsoluteFile());
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				model.setShapes((List<Shape>)ois.readObject());
+				frame.getView().repaint();
+				ois.close();
+				
+			} catch (Exception ex) {
+				
+				System.out.println(ex.getMessage());
+			}
+		}
+	}
+	
+	public void loadLog() {
+		setLoggComm(new LinkedList<String>());
+		JFileChooser fileCh = new JFileChooser();
+		fileCh.setDialogTitle("Choose log you want to open");
+		fileCh.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		
+		if(fileCh.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+			
+			try {
+				
+				BufferedReader buffer = new BufferedReader(new FileReader(fileCh.getSelectedFile().getAbsolutePath()));
+				String text = "";
+				
+				while((text = buffer.readLine()) != null) {
+					getLoggComm().add(text);
+				}
+				buffer.close();
+				
+			} catch (Exception ex) {
+				
+				System.out.println(ex.getMessage());
+			}
+			if(getLoggComm().size() > 0)
+				frame.getBtnNext().setVisible(true);
+		}
+	}
+	
+	public void next() {
+		
+	}
+	
 	public void mouseClicked(MouseEvent arg0) {
 		int x = arg0.getX();
 		int y = arg0.getY();
@@ -429,6 +526,14 @@ public class DrawingController {
 
 	public Stack<Command> getCommandsReverse() {
 		return commandsReverse;
+	}
+
+	public Queue<String> getLoggComm() {
+		return loggComm;
+	}
+
+	public void setLoggComm(Queue<String> loggComm) {
+		this.loggComm = loggComm;
 	}
 	
 	

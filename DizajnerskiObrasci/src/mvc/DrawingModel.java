@@ -13,6 +13,10 @@ public class DrawingModel {
 		return shapes;
 	}
 	
+	public void setShapes(List<Shape> shapes) {
+		this.shapes = shapes;
+	}
+	
 	public List<Shape> getSelectedShapes() {
 		return selectedShapes;
 	}
