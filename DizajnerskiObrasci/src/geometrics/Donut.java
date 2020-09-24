@@ -41,6 +41,21 @@ public class Donut extends Circle{
 		return cloneDonut;
 	}
 	
+	public boolean equals(Object obj) {
+		if (obj instanceof Donut) {
+			Donut d = (Donut) obj;
+			if (this.getCenter().equals(d.getCenter()) &&
+					this.getR() == d.getR()
+					&& this.innerRadius == d.getInnerRadius()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
 	public void draw(Graphics g) {
 		Ellipse2D outerCircle =new Ellipse2D.Double(this.getCenter().getX()-this.getR(),this.getCenter().getY()-this.getR(),this.getR()*2,this.getR()*2);
 		Ellipse2D innerCircle=new Ellipse2D.Double(this.getCenter().getX()-this.getInnerRadius(),this.getCenter().getY()-this.getInnerRadius(),this.getInnerRadius()*2,this.getInnerRadius()*2);
@@ -64,7 +79,7 @@ public class Donut extends Circle{
 	}
 
 	public String toString() {
-		return super.toString() + ", innerRadius: " + innerRadius + ", borderColor= " + this.getBorderColor().getRGB() + ", fillColor= " + this.getFillColor().getRGB();
+		return center + ", radius: " + r + ", innerRadius: " + innerRadius + ", borderColor= " + this.getBorderColor().getRGB() + ", fillColor= " + this.getFillColor().getRGB();
 	}
 
 	public boolean contains(int x, int y) {

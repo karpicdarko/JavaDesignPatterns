@@ -52,6 +52,20 @@ public class Circle extends Shape {
 		// TODO Auto-generated method stub
 		center.moveBy(x, y);
 	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof Circle) {
+			Circle c = (Circle) obj;
+			if (this.center.equals(c.getCenter()) && this.r == c.getR()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(this.getFillColor());

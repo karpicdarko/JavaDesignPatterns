@@ -35,7 +35,20 @@ public class HexagonAdapter extends Shape{
 		}
 		return 0;
 	}
-
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof HexagonAdapter) {
+			HexagonAdapter c = (HexagonAdapter) obj;
+			if (getR() == (c.getR()) && getX() == c.getX() && getY() == c.getY()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
 	@Override
 	public void moveBy(int x, int y) {
 		// TODO Auto-generated method stub
@@ -69,8 +82,19 @@ public class HexagonAdapter extends Shape{
 	public String toString() {
 		Point p = new Point(hexagon.getX(), hexagon.getY());
 
-		return "Center=" + p + ",radius= " + hexagon.getR() + " ,borderColor= " + getBorderColor().getRGB()
-				+ " ,fillColor= " + getFillColor().getRGB();
+		return  p + ", radius= " + hexagon.getR() + ", borderColor= " + getBorderColor().getRGB()
+				+ ", fillColor= " + getFillColor().getRGB();
 		
+	}
+	public int getX() {
+		return hexagon.getX();
+	}
+
+	public int getY() {
+		return hexagon.getY();
+	}
+
+	public int getR() {
+		return hexagon.getR();
 	}
 }

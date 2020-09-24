@@ -90,11 +90,12 @@ public class Point extends Shape{
 	}
 	
 	public Point clone() {
-		Point clonePoint = new Point();
+		Point clonePoint = new Point(this.getX(), this.getY(), this.isSelected(), this.getBorderColor());
+		/*Point clonePoint = new Point();
 		clonePoint.setX(this.getX());
 		clonePoint.setY(this.getY());
 		clonePoint.setBorderColor(this.getBorderColor());
-		clonePoint.setSelected(this.isSelected());
+		clonePoint.setSelected(this.isSelected());*/
 		return clonePoint;
 	}
 

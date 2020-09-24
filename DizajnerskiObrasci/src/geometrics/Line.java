@@ -26,12 +26,13 @@ public class Line extends Shape{
 	}
 
 	public Line clone() {
-		Line cloneLine = new Line(new Point(), new Point());
+		Line cloneLine = new Line(this.getStartPoint(), this.getEndPoint(), this.isSelected(), this.getBorderColor());
+		/*Line cloneLine = new Line(new Point(), new Point());
 		cloneLine.getStartPoint().setX(this.getStartPoint().getX());
 		cloneLine.getStartPoint().setY(this.getStartPoint().getY());
 		cloneLine.getEndPoint().setX(this.getEndPoint().getX());
 		cloneLine.getEndPoint().setY(this.getEndPoint().getY());
-		cloneLine.setBorderColor(this.getBorderColor());
+		cloneLine.setBorderColor(this.getBorderColor());*/
 		return cloneLine;
 	}
 	
@@ -62,8 +63,22 @@ public class Line extends Shape{
 	@Override
 	public int compareTo(Object o) {
 		if(o instanceof Line)
-			return (int) (this.length() - ((Line)o).length());
+			return startPoint.compareTo(endPoint);
 		return 0;
+	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof Line) {
+			Line l = (Line) obj;
+			if (this.startPoint.equals(l.getStartPoint()) &&
+					this.endPoint.equals(l.getEndPoint())) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 	
 

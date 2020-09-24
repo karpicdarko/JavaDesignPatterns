@@ -53,6 +53,20 @@ public class Rectangle extends Shape{
 		upperLeftPoint.moveBy(x, y);
 	}
 	
+	public boolean equals(Object obj) {
+		if (obj instanceof Rectangle) {
+			Rectangle r = (Rectangle) obj;
+			if (this.upperLeftPoint.equals(r.getUpperLeftPoint()) && this.height == r.getHeight()
+					&& this.width == r.getWidth()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(this.getFillColor());

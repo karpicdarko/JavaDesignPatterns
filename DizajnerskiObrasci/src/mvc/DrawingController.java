@@ -17,6 +17,8 @@ import java.util.Stack;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.omg.CORBA.SystemException;
+
 import Strategy.SaveLog;
 import Strategy.SaveManager;
 import Strategy.SavePainting;
@@ -82,7 +84,7 @@ public class DrawingController {
 				if(model.getShapes().get(i) instanceof HexagonAdapter) {
 					frame.getListModel().addElement("Deselect Hexagon "  + model.getShapes().get(i).toString());
 				} else
-					frame.getListModel().addElement("Deslect " + model.getShapes().get(i).getClass().getSimpleName() + ", " + model.getShapes().get(i).toString());
+					frame.getListModel().addElement("Deselect " + model.getShapes().get(i).getClass().getSimpleName() + ", " + model.getShapes().get(i).toString());
 				propertyChangeSupport.firePropertyChange("modify", false, true);
 				propertyChangeSupport.firePropertyChange("delete", false, true);
 				propertyChangeSupport.firePropertyChange("undo", false, true);
@@ -270,9 +272,7 @@ public class DrawingController {
 	public void undo() {
 		if(commandsNormal.isEmpty())
 			return;
-		commandsNormal.peek().unexecute();
-		commandsReverse.push(commandsNormal.peek());
-		commandsNormal.pop();
+		undoForNext();
 		frame.getListModel().addElement("Undo");
 		propertyChangeSupport.firePropertyChange("modify", false, true);
 		propertyChangeSupport.firePropertyChange("delete", false, true);
@@ -281,18 +281,28 @@ public class DrawingController {
 		frame.getView().repaint();
 	}
 	
+	public void undoForNext() {
+		commandsNormal.peek().unexecute();
+		commandsReverse.push(commandsNormal.peek());
+		commandsNormal.pop();
+	}
+	
 	public void redo() {
 		if(commandsReverse.isEmpty())
 			return;
-		commandsReverse.peek().execute();
-		commandsNormal.push(commandsReverse.peek());
-		commandsReverse.pop();
+		redoForNext();
 		frame.getListModel().addElement("Redo");
 		propertyChangeSupport.firePropertyChange("modify", false, true);
 		propertyChangeSupport.firePropertyChange("delete", false, true);
 		propertyChangeSupport.firePropertyChange("undo", false, true);
 		propertyChangeSupport.firePropertyChange("redo", false, true);
 		frame.getView().repaint();
+	}
+	
+	public void redoForNext() {
+		commandsReverse.peek().execute();
+		commandsNormal.push(commandsReverse.peek());
+		commandsReverse.pop();
 	}
 	
 	public void save() {
@@ -373,11 +383,325 @@ public class DrawingController {
 			}
 			if(getLoggComm().size() > 0)
 				frame.getBtnNext().setVisible(true);
+			for(String s : getLoggComm()) {
+				System.out.println(s);
+			}
 		}
 	}
 	
-	public void next() {
+	public void selectForNext(Shape shape) {
+		for(Shape s : model.getShapes()) {
+			//boolean bul = shape.equals(s);
+			if(shape.equals(s)) {
+				CmdSelect cmd = new CmdSelect(s, model);
+				commandsNormal.push(cmd);
+				cmd.execute();
+			}
+		}
 		
+	}
+	public void deselectForNext(Shape shape) {
+		for(Shape s : model.getShapes()) {
+			//boolean bul = shape.equals(s);
+			if(shape.equals(s)) {
+				CmdDeselect cmd = new CmdDeselect(s, model);
+				commandsNormal.push(cmd);
+				cmd.execute();
+			}
+		}
+		
+	}
+	
+	public void deleteForNext() {
+		for (int i = 0; i < model.getSelectedShapes().size(); i++) {
+			
+			CmdDeleteShape cmd = new CmdDeleteShape(model, model.getSelectedShapes().get(i));
+			cmd.execute();
+			commandsReverse = new Stack<Command>();
+			commandsNormal.push(cmd);
+			
+		}
+		model.setSelectedShapes(new ArrayList<Shape>());
+	}
+	
+	public void next() {
+		String[] line = getLoggComm().peek().split("[] (),]+");
+		if(line[0].equals("Add")) {
+			if(line[1].equals("Point")) {
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, (Integer.parseInt(line[8]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[8]))));
+				CmdAddShape addPoint = new CmdAddShape(model, p);
+				addPoint.execute();
+				commandsNormal.add(addPoint);
+			}
+			else if(line[1].equals("Line")) {
+				Point p1 = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[15])));
+				Point p2 = new Point(Integer.parseInt(line[12]), Integer.parseInt(line[13]), false, new Color(Integer.parseInt(line[15])));
+				
+				Line l = new Line(p1, p2, false, (Integer.parseInt(line[17]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[17]))));
+				
+				CmdAddShape addLine = new CmdAddShape(model, l);
+				addLine.execute();
+				commandsNormal.add(addLine);
+				
+			}
+			else if(line[1].equals("Rectangle")) {
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false,new Color(Integer.parseInt(line[8])));
+				int height = Integer.parseInt(line[12]);
+				int width = Integer.parseInt(line[10]);
+				Rectangle r = new Rectangle(p, width , height, false, new Color(Integer.parseInt(line[14])), new Color(Integer.parseInt(line[16])));
+				
+				CmdAddShape addRect = new CmdAddShape(model, r);
+				addRect.execute();
+				commandsNormal.add(addRect);
+			}
+			else if(line[1].equals("Circle")) {
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[8])));
+				int radius = Integer.parseInt(line[10]);
+				Circle c = new Circle(p, radius, false, (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[12]))), (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))));
+				
+				CmdAddShape addCircle = new CmdAddShape(model, c);
+				addCircle.execute();
+				commandsNormal.add(addCircle);
+			}
+			else if(line[1].equals("Donut")) {
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[8])));
+				int radius = Integer.parseInt(line[10]);
+				int innerRadius = Integer.parseInt(line[12]);
+				
+				Donut d = new Donut(p, radius, innerRadius, false, (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))), (Integer.parseInt(line[16]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[16]))));
+				
+				CmdAddShape addDonut = new CmdAddShape(model, d);
+				addDonut.execute();
+				commandsNormal.add(addDonut);
+			}
+			else if(line[1].equals("Hexagon")) {
+				int radius = Integer.parseInt(line[8]);
+				HexagonAdapter h = new HexagonAdapter(Integer.parseInt(line[5]), Integer.parseInt(line[6]), radius,false, (Integer.parseInt(line[10]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[10]))), (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[12]))));
+				
+				
+				CmdAddShape addHex = new CmdAddShape(model, h);
+				addHex.execute();
+				commandsNormal.add(addHex);
+			}
+		} else if(line[0].equals("Select")) {
+			if(line[1].equals("Point")) {
+				
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, (Integer.parseInt(line[8]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[8]))));
+				selectForNext(p);
+		
+			}
+			else if(line[1].equals("Line")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				Point p1 = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[15])));
+				Point p2 = new Point(Integer.parseInt(line[12]), Integer.parseInt(line[13]), false, new Color(Integer.parseInt(line[15])));
+				
+				Line l = new Line(p1, p2, false, (Integer.parseInt(line[17]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[17]))));
+				selectForNext(l);
+				
+			}
+			else if(line[1].equals("Rectangle")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false,new Color(Integer.parseInt(line[14])));
+				int height = Integer.parseInt(line[12]);
+				int width = Integer.parseInt(line[10]);
+				Rectangle r = new Rectangle(p, width , height, false, (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))), (Integer.parseInt(line[16]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[16]))));
+				selectForNext(r);
+			}
+			else if(line[1].equals("Circle")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[8])));
+				int radius = Integer.parseInt(line[10]);
+				Circle c = new Circle(p, radius, false, (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[12]))), (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))));
+				selectForNext(c);
+			}
+			else if(line[1].equals("Donut")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6])+Integer.parseInt(line[10])+1);
+				
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[8])));
+				int radius = Integer.parseInt(line[10]);
+				int innerRadius = Integer.parseInt(line[12]);
+				
+				Donut d = new Donut(p, radius, innerRadius, false, (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))), (Integer.parseInt(line[16]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[16]))));
+				selectForNext(d);
+
+			}
+			else if(line[1].equals("Hexagon")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				int radius = Integer.parseInt(line[8]);
+				HexagonAdapter h = new HexagonAdapter(Integer.parseInt(line[5]), Integer.parseInt(line[6]), radius,false, (Integer.parseInt(line[10]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[10]))), (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[12]))));
+				
+				selectForNext(h);
+	
+			}
+		}
+		else if(line[0].equals("Deselect")) {
+			if(line[1].equals("Point")) {
+				
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, (Integer.parseInt(line[8]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[8]))));
+				deselectForNext(p);
+		
+			}
+			else if(line[1].equals("Line")) {
+				for(String s : line) {
+					System.out.println(s);
+				}
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				Point p1 = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[14])));
+				Point p2 = new Point(Integer.parseInt(line[11]), Integer.parseInt(line[12]), false, new Color(Integer.parseInt(line[14])));
+				
+				Line l = new Line(p1, p2, false, (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))));
+				deselectForNext(l);
+				
+			}
+			else if(line[1].equals("Rectangle")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false,new Color(Integer.parseInt(line[14])));
+				int height = Integer.parseInt(line[12]);
+				int width = Integer.parseInt(line[10]);
+				Rectangle r = new Rectangle(p, width , height, false, (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))), (Integer.parseInt(line[16]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[16]))));
+				deselectForNext(r);
+			}
+			else if(line[1].equals("Circle")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[8])));
+				int radius = Integer.parseInt(line[10]);
+				Circle c = new Circle(p, radius, false, (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[12]))), (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))));
+				deselectForNext(c);
+			}
+			else if(line[1].equals("Donut")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6])+Integer.parseInt(line[10])+1);
+				
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[12])));
+				int radius = Integer.parseInt(line[8]);
+				int innerRadius = Integer.parseInt(line[10]);
+				
+				Donut d = new Donut(p, radius, innerRadius, false, (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[12]))), (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))));
+				deselectForNext(d);
+
+			}
+			else if(line[1].equals("Hexagon")) {
+				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
+				int radius = Integer.parseInt(line[8]);
+				HexagonAdapter h = new HexagonAdapter(Integer.parseInt(line[5]), Integer.parseInt(line[6]), radius,false, (Integer.parseInt(line[10]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[10]))), (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[12]))));
+				
+				deselectForNext(h);
+	
+			}
+		} else if (line[0].equals("Modified")) {
+			
+			Shape selected = model.getSelectedShapes().get(0);
+			if(line[1].equals("Point")) {
+				
+				Point oldState = (Point)selected;
+				Point newState = new Point(Integer.parseInt(line[15]),Integer.parseInt(line[16]),true,new Color(Integer.parseInt(line[18])));
+				CmdUpdatePoint cmdUpdate = new CmdUpdatePoint(oldState, newState);
+				commandsNormal.push(cmdUpdate);
+				cmdUpdate.execute();
+				
+			} else if (line[1].equals("Line")) {
+				
+				Point p1 = new Point(Integer.parseInt(line[24]),Integer.parseInt(line[25]));
+				Point p2 = new Point(Integer.parseInt(line[30]),Integer.parseInt(line[31]));
+				Line oldState = (Line)selected;
+				Line newState = new Line(p1,p2,true,new Color(Integer.parseInt(line[33])));
+				CmdUpdateLine cmdUpdate = new CmdUpdateLine(oldState, newState);
+				commandsNormal.push(cmdUpdate);
+				cmdUpdate.execute();
+				
+			} else if (line[1].equals("Rectangle")) {
+				
+				Point p1 = new Point(Integer.parseInt(line[23]),Integer.parseInt(line[24]));
+				Rectangle oldState = (Rectangle)selected;
+				Rectangle newState = new Rectangle(p1,Integer.parseInt(line[26]), Integer.parseInt(line[28]), true, new Color(Integer.parseInt(line[30])), new Color(Integer.parseInt(line[32])));
+				CmdUpdateRectangle cmdUpdate = new CmdUpdateRectangle(oldState, newState);
+				commandsNormal.push(cmdUpdate);
+				cmdUpdate.execute();
+				
+			} else if (line[1].equals("Circle")) {
+				
+				Point p1 = new Point(Integer.parseInt(line[21]),Integer.parseInt(line[22]));
+				Circle oldState = (Circle)selected;
+				Circle newState = new Circle(p1, Integer.parseInt(line[24]), true ,new Color(Integer.parseInt(line[26])), new Color(Integer.parseInt(line[28])));
+				CmdUpdateCircle cmdUpdate = new CmdUpdateCircle(oldState, newState);
+				commandsNormal.push(cmdUpdate);
+				cmdUpdate.execute();
+				
+			} else if (line[1].equals("Donut")) {
+				
+				Point p1 = new Point(Integer.parseInt(line[23]),Integer.parseInt(line[24]));
+				Donut oldState = (Donut)selected;
+				Donut newState = new Donut(p1, Integer.parseInt(line[26]), Integer.parseInt(line[28]), true, new Color(Integer.parseInt(line[30])), new Color(Integer.parseInt(line[32])));
+				CmdUpdateDonut cmdUpdate = new CmdUpdateDonut(oldState, newState);
+				commandsNormal.push(cmdUpdate);
+				cmdUpdate.execute();
+				
+			} else if (line[1].equals("Hexagon")) {
+				
+				HexagonAdapter oldState = (HexagonAdapter)selected;
+				HexagonAdapter newState = new HexagonAdapter(Integer.parseInt(line[19]), Integer.parseInt(line[20]), Integer.parseInt(line[22]), true, new Color(Integer.parseInt(line[24])), new Color(Integer.parseInt(line[26])));
+				CmdUpdateHexagon cmdUpdate = new CmdUpdateHexagon(oldState, newState);
+				commandsNormal.push(cmdUpdate);
+				cmdUpdate.execute();
+				
+			}
+		} else if(line[0].equals("Delete")) {
+			
+			deleteForNext();
+			
+		} else if(line[0].equals("Undo")) {
+			undoForNext();
+		} else if(line[0].equals("Redo")) {
+			redoForNext();
+		} else if(line[0].equals("To") && line[1].equals("back")) {
+			toBack();
+		} else if(line[0].equals("To") && line[1].equals("front")) {
+			toFront();
+		} else if(line[0].equals("Bring") && line[2].equals("back")) {
+			bringToBack();
+		} else if(line[0].equals("Bring") && line[2].equals("front")) {
+			bringToFront();
+		}
+		
+		
+		propertyChangeSupport.firePropertyChange("delete", false, true);
+		propertyChangeSupport.firePropertyChange("modify", false, true);
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
+		frame.getView().repaint();
+		frame.getListModel().addElement(getLoggComm().poll().toString());
+			
 	}
 	
 	public void mouseClicked(MouseEvent arg0) {
@@ -401,6 +725,7 @@ public class DrawingController {
 				startPoint = new Point();
 				startPoint.setX(arg0.getX());
 				startPoint.setY(arg0.getY());
+				startPoint.setBorderColor(borderColor);
 				firstClick = false;
 				secondClick = true;
 				
@@ -409,6 +734,7 @@ public class DrawingController {
 				endPoint = new Point();
 				endPoint.setX(arg0.getX());
 				endPoint.setY(arg0.getY());
+				endPoint.setBorderColor(borderColor);
 				Line line = new Line(startPoint, endPoint, false, borderColor);
 				CmdAddShape addLine = new CmdAddShape(model, line);
 				commandsReverse = new Stack<Command>();
@@ -425,6 +751,7 @@ public class DrawingController {
 				int width = Integer.parseInt(rectangleDialog.getTxtFirst().getText());
 				int height = Integer.parseInt(rectangleDialog.getTxtSecond().getText());
 				Point upperLeftPoint = new Point(x, y);
+				upperLeftPoint.setBorderColor(borderColor);
 				Rectangle rectangle = new Rectangle(upperLeftPoint, width, height, false, borderColor, fillColor);
 				CmdAddShape addRectangle = new CmdAddShape(model, rectangle);
 				commandsReverse = new Stack<Command>();
@@ -439,6 +766,7 @@ public class DrawingController {
 			GeometryDialog circleDialog = new GeometryDialog("circle");
 			if(circleDialog.isOk()) {
 				Point center = new Point(x, y);
+				center.setBorderColor(borderColor);
 				int r = Integer.parseInt(circleDialog.getTxtFirst().getText());
 				Circle circle = new Circle(center, r, false, borderColor, fillColor);
 				CmdAddShape addCircle = new CmdAddShape(model, circle);
@@ -453,6 +781,7 @@ public class DrawingController {
 			GeometryDialog donutDialog = new GeometryDialog("donut");
 			if(donutDialog.isOk()) {
 				Point center = new Point(x, y);
+				center.setBorderColor(borderColor);
 				int outerRadius = Integer.parseInt(donutDialog.getTxtSecond().getText());
 				int innerRadius = Integer.parseInt(donutDialog.getTxtFirst().getText());
 				Donut donut = new Donut(center, outerRadius, innerRadius, false, borderColor, fillColor);
