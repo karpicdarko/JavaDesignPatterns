@@ -2,6 +2,7 @@ package commands;
 
 import java.util.List;
 
+import geometrics.HexagonAdapter;
 import geometrics.Shape;
 
 public class CmdBringToBack implements Command{
@@ -47,5 +48,13 @@ public class CmdBringToBack implements Command{
 			shapes.set(i+1,swap);
 		}
 
+	}
+	
+	public String toString() {
+		if(shapes.get(destinationIndex) instanceof HexagonAdapter) {
+			return "Bring to back Hexagon "  + shapes.get(destinationIndex).toString();
+		} else 
+			return "Bring to back " + shapes.get(destinationIndex).getClass().getSimpleName() + " " + shapes.get(destinationIndex).toString();
+		
 	}
 }

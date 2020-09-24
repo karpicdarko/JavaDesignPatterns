@@ -1,5 +1,8 @@
 package commands;
 
+import geometrics.HexagonAdapter;
+import geometrics.Line;
+import geometrics.Point;
 import geometrics.Shape;
 import mvc.DrawingModel;
 
@@ -23,6 +26,14 @@ public class CmdDeleteShape implements Command{
 	@Override
 	public void unexecute() {
 		model.add(shape);
+		
+	}
+	
+	public String toString() {
+		if(shape instanceof HexagonAdapter) {
+			return "Delete Hexagon "  + shape.toString();
+		} else 
+			return "Delete " + shape.getClass().getSimpleName() + " " + shape.toString();
 		
 	}
 }

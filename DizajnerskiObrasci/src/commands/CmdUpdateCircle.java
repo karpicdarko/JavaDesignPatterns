@@ -35,4 +35,8 @@ public class CmdUpdateCircle implements Command{
 		oldState.setFillColor(original.getFillColor());
 		oldState.setSelected(original.isSelected());
 	}
+	public String toString() {
+		return "Modified Circle " + "[" + oldState + "]" + " to [" + newState + "]";
+	}
+	
 }

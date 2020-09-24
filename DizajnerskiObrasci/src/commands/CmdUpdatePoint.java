@@ -33,6 +33,11 @@ public class CmdUpdatePoint implements Command{
 		oldState.setBorderColor(original.getBorderColor());
 		oldState.setSelected(original.isSelected());
 	}
+	
+	public String toString() {
+		return "Modified Point " + "[" + oldState + "]" + " to [" + newState + "]";
+	}
+	
 
 
 }

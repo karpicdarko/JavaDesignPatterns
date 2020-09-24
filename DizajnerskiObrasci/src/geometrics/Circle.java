@@ -82,7 +82,7 @@ public class Circle extends Shape {
 	// redefinisati toString()
 	// (xCenter,yCenter), radius: r
 	public String toString() {
-		return center+", radius: "+r;
+		return center+", radius: "+r+", borderColor= " + this.getBorderColor().getRGB() + ", fillColor= " + this.getFillColor().getRGB();
 	}
 	// redefinisati equals tako da poredi krugove po radijusu
 

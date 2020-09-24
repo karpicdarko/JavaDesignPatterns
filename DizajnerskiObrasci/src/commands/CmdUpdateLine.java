@@ -29,4 +29,9 @@ public class CmdUpdateLine implements Command{
 		oldState.setSelected(original.isSelected());
 
 	}
+	
+	public String toString() {
+		return "Modified Line " + "[" + oldState + "]" + " to [" + newState + "]";
+	}
+	
 }

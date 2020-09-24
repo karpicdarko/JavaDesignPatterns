@@ -50,8 +50,7 @@ public class Donut extends Circle{
 		graphics2D.setColor(getFillColor());
 		graphics2D.fill(donut);
 		graphics2D.setColor(getBorderColor());
-		graphics2D.drawOval(this.getCenter().getX()-this.getInnerRadius(),this.getCenter().getY()-this.getInnerRadius(),this.getInnerRadius()*2,this.getInnerRadius()*2);
-		graphics2D.drawOval(this.getCenter().getX()-this.getR(),this.getCenter().getY()-this.getR(),this.getR()*2,this.getR()*2);
+		graphics2D.draw(donut);
 		if (isSelected()) {
 			g.setColor(Color.BLUE);
 			g.drawRect(center.getX() - r - 3, center.getY() - 3, 6, 6);
@@ -65,7 +64,7 @@ public class Donut extends Circle{
 	}
 
 	public String toString() {
-		return super.toString() + ", innerRadius: " + innerRadius;
+		return super.toString() + ", innerRadius: " + innerRadius + ", borderColor= " + this.getBorderColor().getRGB() + ", fillColor= " + this.getFillColor().getRGB();
 	}
 
 	public boolean contains(int x, int y) {

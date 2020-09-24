@@ -5,7 +5,7 @@ import geometrics.Donut;
 public class CmdUpdateDonut implements Command{
 	private Donut oldState;
 	private Donut newState;
-	private Donut original=new Donut();
+	private Donut original;
 	
 	public CmdUpdateDonut(Donut oldState,Donut newState) {
 		this.oldState=oldState;
@@ -16,7 +16,7 @@ public class CmdUpdateDonut implements Command{
 		original=oldState.clone();
 		oldState.setR(newState.getR());
 		oldState.setBorderColor(newState.getBorderColor());
-		//oldState.setCenter(newState.getCenter());
+		oldState.setCenter(newState.getCenter());
 		oldState.getCenter().setX(newState.getCenter().getX());
 		oldState.getCenter().setY(newState.getCenter().getY());
 		oldState.setFillColor(newState.getFillColor());
@@ -35,4 +35,9 @@ public class CmdUpdateDonut implements Command{
 		oldState.setInnerRadius(original.getInnerRadius());
 		oldState.setSelected(original.isSelected());
 	}
+	
+	public String toString() {
+		return "Modified Donut " + "[" + oldState + "]" + " to [" + newState + "]";
+	}
+	
 }

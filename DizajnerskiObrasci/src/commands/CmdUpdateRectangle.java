@@ -35,4 +35,9 @@ public class CmdUpdateRectangle implements Command {
 		oldState.setSelected(original.isSelected());
 	}
 
+	public String toString() {
+		return "Modified Rectangle " + "[" + oldState + "]" + " to [" + newState + "]";
+	}
+	
+	
 }

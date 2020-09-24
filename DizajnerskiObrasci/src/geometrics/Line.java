@@ -68,7 +68,7 @@ public class Line extends Shape{
 	
 
 	public String toString() {
-		return startPoint + "-->" + endPoint;
+		return startPoint + "-->" + endPoint + ", borderColor= " + this.getBorderColor().getRGB();
 	}
 	
 	

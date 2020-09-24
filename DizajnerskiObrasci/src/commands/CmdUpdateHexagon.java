@@ -16,7 +16,7 @@ public class CmdUpdateHexagon implements Command {
 		original=oldState.clone();
 		oldState.getHexagon().setBorderColor(newState.getHexagon().getBorderColor());
 		oldState.setBorderColor(newState.getHexagon().getBorderColor());
-		oldState.setFillColor(newState.getHexagon().getBorderColor());
+		oldState.setFillColor(newState.getHexagon().getAreaColor());
 		oldState.getHexagon().setAreaColor(newState.getHexagon().getAreaColor());
 		oldState.getHexagon().setR(newState.getHexagon().getR());
 		oldState.getHexagon().setY(newState.getHexagon().getY());
@@ -38,4 +38,8 @@ public class CmdUpdateHexagon implements Command {
 		oldState.getHexagon().setSelected(original.isSelected());
 		
 	}
+	public String toString() {
+		return "Modified Hexagon " + "[" + oldState + "]" + " to [" + newState + "]";
+	}
+	
 }

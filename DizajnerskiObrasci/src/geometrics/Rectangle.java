@@ -81,7 +81,7 @@ public class Rectangle extends Shape{
 	}
 
 	public String toString() {
-		return upperLeftPoint+", width: "+width+", height: "+height;
+		return upperLeftPoint+", width: "+width+", height: "+height + ", borderColor= " + this.getBorderColor().getRGB() + ", fillColor= " + this.getFillColor().getRGB();
 	}
 
 	public int area() {

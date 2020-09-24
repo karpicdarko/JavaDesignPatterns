@@ -2,6 +2,7 @@ package mvc;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -11,15 +12,26 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JToggleButton;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.GridLayout;
+import javax.swing.JList;
+import javax.management.modelmbean.ModelMBean;
+import javax.swing.BoxLayout;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.border.LineBorder;
+import javax.swing.JScrollBar;
 
 
 public class DrawingFrame extends JFrame implements PropertyChangeListener{
@@ -41,8 +53,19 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 	private final JButton btnToFront = new JButton("To Front");
 	private final JButton btnBringToBack = new JButton("Bring To Back");
 	private final JButton btnBringToFront = new JButton("Bring to Front");
+	private DefaultListModel<String> listModel = new DefaultListModel<String>();
+	private final JPanel southPanel = new JPanel();
+	private JList<String> list = new JList<String>();
+	private final JScrollPane scrollPane_1 = new JScrollPane(list);
+	private final JButton btnUndo = new JButton("Undo");
+	private final JButton btnRedo = new JButton("Redo");
+	private final JButton btnSave = new JButton("Save");
+	private final JButton btnLoad = new JButton("Load");
+	
 	
 	public DrawingFrame() {
+		
+		view.setBackground(Color.WHITE);
 		view.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -64,13 +87,14 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 		});
 		getBtnModify().setVisible(false);
 		
+		
 		JPanel westPanel = new JPanel();
 		getContentPane().add(westPanel, BorderLayout.WEST);
 		GridBagLayout gbl_westPanel = new GridBagLayout();
 		gbl_westPanel.columnWidths = new int[]{121, 0};
-		gbl_westPanel.rowHeights = new int[]{23, 23, 23, 23, 23, 23, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_westPanel.rowHeights = new int[]{23, 23, 23, 23, 23, 23, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_westPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_westPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_westPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		westPanel.setLayout(gbl_westPanel);
 		
 	
@@ -140,11 +164,34 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 		gbc_btnFillColor.insets = new Insets(0, 0, 5, 0);
 		gbc_btnFillColor.gridx = 0;
 		gbc_btnFillColor.gridy = 7;
+		btnFillColor.setBackground(Color.white);
 		btnFillColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Color fillColor = JColorChooser.showDialog(getContentPane(), "Choose fill color", controller.getFillColor()); 
-				controller.setFillColor(fillColor);
-				btnFillColor.setBackground(fillColor);
+				final JColorChooser colorChooser = new JColorChooser(controller.getFillColor());
+
+			    ActionListener okActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        controller.setFillColor(colorChooser.getColor()); 
+			        btnFillColor.setBackground(colorChooser.getColor());
+
+			        
+			      }
+			    };
+
+			    ActionListener cancelActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        controller.setFillColor(controller.getFillColor());
+			        btnFillColor.setBackground(controller.getFillColor());
+
+			      }
+			    };
+
+			    final JDialog dialog = JColorChooser.createDialog(null, "Choose shape color", true,
+			        colorChooser, okActionListener, cancelActionListener);
+
+			    dialog.setVisible(true);
+				
+	
 			}
 		});
 		westPanel.add(btnFillColor, gbc_btnFillColor);
@@ -153,11 +200,34 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 		gbc_btnBorderColor.insets = new Insets(0, 0, 5, 0);
 		gbc_btnBorderColor.gridx = 0;
 		gbc_btnBorderColor.gridy = 8;
+		btnBorderColor.setBackground(Color.black);
 		btnBorderColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Color borderColor = JColorChooser.showDialog(getContentPane(), "Choose border color", controller.getBorderColor());
-				controller.setBorderColor(borderColor);
-				btnBorderColor.setBackground(borderColor);
+				
+				final JColorChooser colorChooser = new JColorChooser(controller.getBorderColor());
+
+			    ActionListener okActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        controller.setBorderColor(colorChooser.getColor()); 
+			        btnBorderColor.setBackground(colorChooser.getColor());
+
+			        
+			      }
+			    };
+
+			    ActionListener cancelActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        controller.setBorderColor(controller.getBorderColor());
+			        btnBorderColor.setBackground(controller.getBorderColor());
+
+			      }
+			    };
+
+			    final JDialog dialog = JColorChooser.createDialog(null, "Choose shape color", true,
+			        colorChooser, okActionListener, cancelActionListener);
+
+			    dialog.setVisible(true);
+				
 			}
 		});
 		westPanel.add(btnBorderColor, gbc_btnBorderColor);
@@ -208,6 +278,7 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 		westPanel.add(btnBringToBack, gbc_btnBringToBack);
 		
 		GridBagConstraints gbc_btnBringToFront = new GridBagConstraints();
+		gbc_btnBringToFront.insets = new Insets(0, 0, 5, 0);
 		gbc_btnBringToFront.gridx = 0;
 		gbc_btnBringToFront.gridy = 14;
 		btnBringToFront.addActionListener(new ActionListener() {
@@ -216,6 +287,49 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 			}
 		});
 		westPanel.add(btnBringToFront, gbc_btnBringToFront);
+		
+		GridBagConstraints gbc_btnUndo = new GridBagConstraints();
+		gbc_btnUndo.insets = new Insets(0, 0, 5, 0);
+		gbc_btnUndo.gridx = 0;
+		gbc_btnUndo.gridy = 15;
+		btnUndo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				controller.undo();
+			}
+		});
+		westPanel.add(btnUndo, gbc_btnUndo);
+		
+		GridBagConstraints gbc_btnRedo = new GridBagConstraints();
+		gbc_btnRedo.insets = new Insets(0, 0, 5, 0);
+		gbc_btnRedo.gridx = 0;
+		gbc_btnRedo.gridy = 16;
+		btnRedo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.redo();
+			}
+		});
+		westPanel.add(btnRedo, gbc_btnRedo);
+		
+		GridBagConstraints gbc_btnSave = new GridBagConstraints();
+		gbc_btnSave.insets = new Insets(0, 0, 5, 0);
+		gbc_btnSave.gridx = 0;
+		gbc_btnSave.gridy = 17;
+		westPanel.add(btnSave, gbc_btnSave);
+		
+		GridBagConstraints gbc_btnLoad = new GridBagConstraints();
+		gbc_btnLoad.gridx = 0;
+		gbc_btnLoad.gridy = 18;
+		westPanel.add(btnLoad, gbc_btnLoad);
+		
+		getContentPane().add(southPanel, BorderLayout.SOUTH);
+		southPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		list.setVisibleRowCount(9);
+		list.setModel(listModel);
+		
+		southPanel.add(scrollPane_1, "cell 0 0,grow");
+		
+	
+		
 	}
 	
 	public DrawingView getView() {
@@ -289,14 +403,32 @@ public class DrawingFrame extends JFrame implements PropertyChangeListener{
 	public JButton getBtnDelete() {
 		return btnDelete;
 	}
+	
+	public DefaultListModel<String> getListModel() {
+		return listModel;
+	}
+
+	public void setListModel(DefaultListModel<String> listModel) {
+		this.listModel = listModel;
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("delete")) {
 			getBtnDelete().setVisible((boolean)arg0.getNewValue());
 		} else if (arg0.getPropertyName().equals("modify")) {
-			getBtnModify().setVisible((boolean)arg0.getNewValue());
+			if(controller.getModel().getSelectedShapes().size() == 1) {
+				getBtnModify().setVisible((boolean)arg0.getNewValue());
+			} else {
+				getBtnModify().setVisible((boolean)arg0.getOldValue());
+			}
+			
+		} else if (arg0.getPropertyName().equals("redo")) {
+			
+		}  else if (arg0.getPropertyName().equals("undo")) {
+			
 		}
+			
 		
 		
 	}

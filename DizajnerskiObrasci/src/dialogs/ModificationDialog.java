@@ -142,8 +142,27 @@ public class ModificationDialog extends JDialog{
 		gbc_btnBorderColor.gridy = 8;
 		btnBorderColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				borderColor = JColorChooser.showDialog(getContentPane(), "Choose border color", shape.getBorderColor()); 
-				btnBorderColor.setBackground(borderColor);
+				final JColorChooser colorChooser = new JColorChooser(shape.getBorderColor());
+
+			    ActionListener okActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        borderColor = colorChooser.getColor();
+			        btnBorderColor.setBackground(borderColor);
+
+			      }
+			    };
+
+			    ActionListener cancelActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        borderColor = shape.getBorderColor();
+			        btnBorderColor.setBackground(shape.getBorderColor());
+			      }
+			    };
+
+			    final JDialog dialog = JColorChooser.createDialog(null, "Change shape color", true,
+			        colorChooser, okActionListener, cancelActionListener);
+
+			    dialog.setVisible(true);
 			}
 		});
 		panelCenter.add(btnBorderColor, gbc_btnBorderColor);
@@ -156,8 +175,28 @@ public class ModificationDialog extends JDialog{
 		gbc_btnFillColor.gridy = 9;
 		btnFillColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				fillColor = JColorChooser.showDialog(getContentPane(), "Choose fill color", shape.getFillColor()); 
-				btnFillColor.setBackground(fillColor);
+				final JColorChooser colorChooser = new JColorChooser(shape.getFillColor());
+
+			    ActionListener okActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        fillColor = colorChooser.getColor();
+			        btnFillColor.setBackground(fillColor);
+			        
+			      }
+			    };
+
+			    ActionListener cancelActionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        fillColor = shape.getFillColor();
+			        btnFillColor.setBackground(shape.getFillColor());
+			      }
+			    };
+
+			    final JDialog dialog = JColorChooser.createDialog(null, "Change shape color", true,
+			        colorChooser, okActionListener, cancelActionListener);
+
+			    dialog.setVisible(true);
+				
 				
 			}
 		});
@@ -166,8 +205,10 @@ public class ModificationDialog extends JDialog{
 	
 	public ModificationDialog(Shape shape) { 
 		this();
+		
 		this.shape = shape;
 		if (shape instanceof Point) {
+			borderColor = shape.getBorderColor();
 			lblNewLabel.setText("X coordinate");
 			lblNewLabel_1.setText("Y coordinate");
 			textField.setText(String.valueOf(((Point) shape).getX()));
@@ -181,6 +222,7 @@ public class ModificationDialog extends JDialog{
 			
 		}
 		else if (shape instanceof Line) {
+			borderColor = shape.getBorderColor();
 			lblNewLabel.setText("Start Point X coordinate");
 			lblNewLabel_1.setText("Start Point Y coordinate");
 			lblNewLabel_2.setText("End Point X coordinate");
@@ -194,6 +236,8 @@ public class ModificationDialog extends JDialog{
 			
 		}
 		else if(shape instanceof Rectangle) {
+			borderColor = shape.getBorderColor();
+			fillColor = shape.getFillColor();
 			lblNewLabel.setText("Upper Left Point X coordinate");
 			lblNewLabel_1.setText("Upper Left Y coordinate");
 			lblNewLabel_2.setText("Width");
@@ -207,6 +251,8 @@ public class ModificationDialog extends JDialog{
 			
 		}
 		else if (shape instanceof Circle && !(shape instanceof Donut)) {
+			borderColor = shape.getBorderColor();
+			fillColor = shape.getFillColor();
 			lblNewLabel.setText("Center Point X coordinate");
 			lblNewLabel_1.setText("Center Left Y coordinate");
 			lblNewLabel_2.setText("Radius");
@@ -219,6 +265,8 @@ public class ModificationDialog extends JDialog{
 			btnFillColor.setBackground(shape.getFillColor());
 		}
 		else if (shape instanceof Donut) {
+			setBorderColor(shape.getBorderColor());
+			setFillColor(shape.getFillColor());
 			lblNewLabel.setText("Center Point X coordinate");
 			lblNewLabel_1.setText("Center Left Y coordinate");
 			lblNewLabel_2.setText("Inner Radius");
@@ -227,10 +275,12 @@ public class ModificationDialog extends JDialog{
 			textField_1.setText(String.valueOf(((Donut) shape).getCenter().getY()));
 			textField_2.setText(String.valueOf(((Donut) shape).getInnerRadius()));
 			textField_3.setText(String.valueOf(((Donut) shape).getR()));
-			btnBorderColor.setBackground(shape.getBorderColor());
-			btnFillColor.setBackground(shape.getFillColor());
+			btnBorderColor.setBackground(getBorderColor());
+			btnFillColor.setBackground(getFillColor());
 		}
 		else if (shape instanceof HexagonAdapter) {
+			borderColor = shape.getBorderColor();
+			fillColor = shape.getFillColor();
 			lblNewLabel.setText("X coordinate");
 			lblNewLabel_1.setText("Y coordinate");
 			lblNewLabel_2.setText("Radius");
@@ -347,6 +397,14 @@ public class ModificationDialog extends JDialog{
 
 	public void setFillColor(Color fillColor) {
 		this.fillColor = fillColor;
+	}
+
+	public Shape getDialogShape() {
+		return shape;
+	}
+
+	public void setShape(Shape shape) {
+		this.shape = shape;
 	}
 	
 	

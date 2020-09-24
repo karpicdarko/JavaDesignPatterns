@@ -41,5 +41,12 @@ public class CmdToBack implements Command{
 		this.destinationIndex = destinationIndex;
 	}
 
+	public String toString() {
+		if(shapes.get(destinationIndex) instanceof HexagonAdapter) {
+			return "To back Hexagon "  + shapes.get(destinationIndex).toString();
+		} else 
+			return "To back " + shapes.get(destinationIndex).getClass().getSimpleName() + " " + shapes.get(destinationIndex).toString();
+		
+	}
 
 }

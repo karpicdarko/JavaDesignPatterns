@@ -63,7 +63,10 @@ public class Point extends Shape{
 
 	public String toString() {
 		// (x, y)
-		return "(x, y)-->" + "("+x+","+this.y+")";
+		if (this.getBorderColor() != null) {
+			return "(x, y)-->" + "("+x+","+this.y+")" + ", borderColor= " + this.getBorderColor().getRGB() ;
+		}else
+			return "(x, y)-->" + "("+x+","+this.y+")";
 	}
 
 	public boolean equals(Object obj) {

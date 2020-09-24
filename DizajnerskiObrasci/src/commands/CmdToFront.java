@@ -2,6 +2,7 @@ package commands;
 
 import java.util.List;
 
+import geometrics.HexagonAdapter;
 import geometrics.Shape;
 
 public class CmdToFront implements Command{
@@ -40,5 +41,12 @@ public class CmdToFront implements Command{
 	public void setDestinationIndex(int destinationIndex) {
 		this.destinationIndex = destinationIndex;
 	}
-
+	
+	public String toString() {
+		if(shapes.get(destinationIndex) instanceof HexagonAdapter) {
+			return "To front Hexagon "  + shapes.get(destinationIndex).toString();
+		} else 
+			return "To front " + shapes.get(destinationIndex).getClass().getSimpleName() + " " + shapes.get(destinationIndex).toString();
+		
+	}
 }
