@@ -26,6 +26,9 @@ public class CmdDeleteShape implements Command{
 	@Override
 	public void unexecute() {
 		model.add(shape);
+		if(shape.isSelected()) {
+			model.getSelectedShapes().add(shape);
+		}
 		
 	}
 	
