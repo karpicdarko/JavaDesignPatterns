@@ -9,8 +9,11 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -338,6 +341,23 @@ public class DrawingController {
 			
 		}
 	}
+	
+	public void settingSelected() {
+		for(Shape s : model.getShapes()) {
+			if(s.isSelected()) {
+				model.getSelectedShapes().add(s);
+			}
+		}
+		propertyChangeSupport.firePropertyChange("delete", false, true);
+		propertyChangeSupport.firePropertyChange("modify", false, true);
+			
+	}
+	
+	public void setPaintingEmpty() {
+		model.setShapes(new ArrayList<Shape>());
+		frame.getView().repaint();
+	}
+	
 	public void loadPainting() {
 		JFileChooser fileCh = new JFileChooser();
 		fileCh.setDialogTitle("Specify the painting you want to open");
@@ -346,6 +366,7 @@ public class DrawingController {
 		if(fileCh.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 			
 			try {
+				setPaintingEmpty();
 				FileInputStream fis = new FileInputStream(fileCh.getSelectedFile().getAbsoluteFile());
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				model.setShapes((List<Shape>)ois.readObject());
@@ -356,7 +377,10 @@ public class DrawingController {
 				
 				System.out.println(ex.getMessage());
 			}
+			settingSelected();
 		}
+		
+		
 	}
 	
 	public void loadLog() {
@@ -383,6 +407,8 @@ public class DrawingController {
 			}
 			if(getLoggComm().size() > 0)
 				frame.getBtnNext().setVisible(true);
+				frame.getBtnRedo().setVisible(false);
+				frame.getBtnUndo().setVisible(false);
 			for(String s : getLoggComm()) {
 				System.out.println(s);
 			}
@@ -695,10 +721,10 @@ public class DrawingController {
 		}
 		
 		
-		propertyChangeSupport.firePropertyChange("delete", false, true);
+		/*propertyChangeSupport.firePropertyChange("delete", false, true);
 		propertyChangeSupport.firePropertyChange("modify", false, true);
 		propertyChangeSupport.firePropertyChange("undo", false, true);
-		propertyChangeSupport.firePropertyChange("redo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);*/
 		frame.getView().repaint();
 		frame.getListModel().addElement(getLoggComm().poll().toString());
 			
