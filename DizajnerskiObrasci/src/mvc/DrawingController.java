@@ -356,8 +356,13 @@ public class DrawingController {
 	public void setPaintingEmpty() {
 		model.setShapes(new ArrayList<Shape>());
 		model.setSelectedShapes(new ArrayList<Shape>());
+		setCommandsNormal(new Stack<Command>());
+		setCommandsReverse(new Stack<Command>());
 		frame.getView().repaint();
-		
+		propertyChangeSupport.firePropertyChange("delete", false, true);
+		propertyChangeSupport.firePropertyChange("modify", false, true);
+		propertyChangeSupport.firePropertyChange("undo", false, true);
+		propertyChangeSupport.firePropertyChange("redo", false, true);
 	}
 	
 	public void loadPainting() {
@@ -896,6 +901,14 @@ public class DrawingController {
 
 	public void setLoggComm(Queue<String> loggComm) {
 		this.loggComm = loggComm;
+	}
+
+	public void setCommandsNormal(Stack<Command> commandsNormal) {
+		this.commandsNormal = commandsNormal;
+	}
+
+	public void setCommandsReverse(Stack<Command> commandsReverse) {
+		this.commandsReverse = commandsReverse;
 	}
 	
 	
