@@ -142,7 +142,7 @@ public class DrawingController {
 					if(lineModify.isOk()) {
 						Line oldState = (Line)selected;
 						Line newState = new Line(new Point(Integer.parseInt(lineModify.getTextField().getText()),
-								 Integer.parseInt(lineModify.getTextField_1().getText())), new Point(Integer.parseInt(lineModify.getTextField_2().getText()),
+								 Integer.parseInt(lineModify.getTextField_1().getText()), false, lineModify.getBorderColor()), new Point(Integer.parseInt(lineModify.getTextField_2().getText()),
 										 Integer.parseInt(lineModify.getTextField_3().getText())), oldState.isSelected(), lineModify.getBorderColor());
 						CmdUpdateLine cmdUpdate = new CmdUpdateLine(oldState, newState);
 						frame.getListModel().addElement(cmdUpdate.toString());
@@ -157,7 +157,7 @@ public class DrawingController {
 					if(rectangleModify.isOk()) {
 						Rectangle oldState = (Rectangle)selected;
 						Rectangle newState = new Rectangle(new Point(Integer.parseInt(rectangleModify.getTextField().getText()),
-								 Integer.parseInt(rectangleModify.getTextField_1().getText())), Integer.parseInt(rectangleModify.getTextField_2().getText()), Integer.parseInt(rectangleModify.getTextField_3().getText()),
+								 Integer.parseInt(rectangleModify.getTextField_1().getText()), false, rectangleModify.getBorderColor()), Integer.parseInt(rectangleModify.getTextField_2().getText()), Integer.parseInt(rectangleModify.getTextField_3().getText()),
 								 oldState.isSelected(), rectangleModify.getBorderColor(), rectangleModify.getFillColor());
 						CmdUpdateRectangle cmdUpdate = new CmdUpdateRectangle(oldState, newState);
 						frame.getListModel().addElement(cmdUpdate.toString());
@@ -172,7 +172,7 @@ public class DrawingController {
 					if(circleModify.isOk()) {
 						Circle oldState = (Circle)selected;
 						Circle newState = new Circle(new Point(Integer.parseInt(circleModify.getTextField().getText()),
-								 Integer.parseInt(circleModify.getTextField_1().getText())), Integer.parseInt(circleModify.getTextField_2().getText()), oldState.isSelected(), circleModify.getBorderColor(), circleModify.getFillColor());
+								 Integer.parseInt(circleModify.getTextField_1().getText()), false, circleModify.getBorderColor()), Integer.parseInt(circleModify.getTextField_2().getText()), oldState.isSelected(), circleModify.getBorderColor(), circleModify.getFillColor());
 						CmdUpdateCircle cmdUpdate = new CmdUpdateCircle(oldState, newState);
 						frame.getListModel().addElement(cmdUpdate.toString());
 						commandsNormal.push(cmdUpdate);
@@ -186,7 +186,7 @@ public class DrawingController {
 					if(donutModify.isOk()) {
 						Donut oldState = (Donut)selected;
 						Donut newState = new Donut(new Point(Integer.parseInt(donutModify.getTextField().getText()),
-								Integer.parseInt(donutModify.getTextField_1().getText())), Integer.parseInt(donutModify.getTextField_3().getText()),
+								Integer.parseInt(donutModify.getTextField_1().getText()), false, donutModify.getBorderColor()), Integer.parseInt(donutModify.getTextField_3().getText()),
 								Integer.parseInt(donutModify.getTextField_2().getText()),oldState.isSelected(), donutModify.getBorderColor(), donutModify.getFillColor());
 						CmdUpdateDonut cmdUpdate = new CmdUpdateDonut(oldState, newState);
 						frame.getListModel().addElement(cmdUpdate.toString());
@@ -505,8 +505,8 @@ public class DrawingController {
 				Point p1 = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[15])));
 				Point p2 = new Point(Integer.parseInt(line[12]), Integer.parseInt(line[13]), false, new Color(Integer.parseInt(line[15])));
 				
-				Line l = new Line(p1, p2, false, (Integer.parseInt(line[17]) == 0 ? new Color(0, 0, 0, 0)
-						: new Color(Integer.parseInt(line[17]))));
+				Line l = new Line(p1, p2, false, (Integer.parseInt(line[15]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[15]))));
 				selectForNext(l);
 				
 			}
@@ -568,11 +568,11 @@ public class DrawingController {
 					System.out.println(s);
 				}
 				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6]));
-				Point p1 = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[14])));
-				Point p2 = new Point(Integer.parseInt(line[11]), Integer.parseInt(line[12]), false, new Color(Integer.parseInt(line[14])));
+				Point p1 = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[15])));
+				Point p2 = new Point(Integer.parseInt(line[12]), Integer.parseInt(line[13]), false, new Color(Integer.parseInt(line[15])));
 				
-				Line l = new Line(p1, p2, false, (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
-						: new Color(Integer.parseInt(line[14]))));
+				Line l = new Line(p1, p2, false, (Integer.parseInt(line[15]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[15]))));
 				deselectForNext(l);
 				
 			}
@@ -599,13 +599,13 @@ public class DrawingController {
 			else if(line[1].equals("Donut")) {
 				//select(Integer.parseInt(line[5]), Integer.parseInt(line[6])+Integer.parseInt(line[10])+1);
 				
-				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[12])));
-				int radius = Integer.parseInt(line[8]);
-				int innerRadius = Integer.parseInt(line[10]);
+				Point p = new Point(Integer.parseInt(line[5]), Integer.parseInt(line[6]), false, new Color(Integer.parseInt(line[14])));
+				int radius = Integer.parseInt(line[10]);
+				int innerRadius = Integer.parseInt(line[12]);
 				
-				Donut d = new Donut(p, radius, innerRadius, false, (Integer.parseInt(line[12]) == 0 ? new Color(0, 0, 0, 0)
-						: new Color(Integer.parseInt(line[12]))), (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
-						: new Color(Integer.parseInt(line[14]))));
+				Donut d = new Donut(p, radius, innerRadius, false, (Integer.parseInt(line[14]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[14]))), (Integer.parseInt(line[16]) == 0 ? new Color(0, 0, 0, 0)
+						: new Color(Integer.parseInt(line[16]))));
 				deselectForNext(d);
 
 			}
@@ -632,37 +632,37 @@ public class DrawingController {
 				
 			} else if (line[1].equals("Line")) {
 				
-				Point p1 = new Point(Integer.parseInt(line[24]),Integer.parseInt(line[25]));
-				Point p2 = new Point(Integer.parseInt(line[30]),Integer.parseInt(line[31]));
+				Point p1 = new Point(Integer.parseInt(line[24]),Integer.parseInt(line[25]), false, new Color(Integer.parseInt(line[34])));
+				Point p2 = new Point(Integer.parseInt(line[31]),Integer.parseInt(line[32]), false, new Color(Integer.parseInt(line[34])));
 				Line oldState = (Line)selected;
-				Line newState = new Line(p1,p2,true,new Color(Integer.parseInt(line[33])));
+				Line newState = new Line(p1,p2,true,new Color(Integer.parseInt(line[34])));
 				CmdUpdateLine cmdUpdate = new CmdUpdateLine(oldState, newState);
 				commandsNormal.push(cmdUpdate);
 				cmdUpdate.execute();
 				
 			} else if (line[1].equals("Rectangle")) {
 				
-				Point p1 = new Point(Integer.parseInt(line[23]),Integer.parseInt(line[24]));
+				Point p1 = new Point(Integer.parseInt(line[23]),Integer.parseInt(line[24]), false, new Color(Integer.parseInt(line[32])));
 				Rectangle oldState = (Rectangle)selected;
-				Rectangle newState = new Rectangle(p1,Integer.parseInt(line[26]), Integer.parseInt(line[28]), true, new Color(Integer.parseInt(line[30])), new Color(Integer.parseInt(line[32])));
+				Rectangle newState = new Rectangle(p1,Integer.parseInt(line[28]), Integer.parseInt(line[30]), true, new Color(Integer.parseInt(line[32])), new Color(Integer.parseInt(line[34])));
 				CmdUpdateRectangle cmdUpdate = new CmdUpdateRectangle(oldState, newState);
 				commandsNormal.push(cmdUpdate);
 				cmdUpdate.execute();
 				
 			} else if (line[1].equals("Circle")) {
 				
-				Point p1 = new Point(Integer.parseInt(line[21]),Integer.parseInt(line[22]));
+				Point p1 = new Point(Integer.parseInt(line[21]),Integer.parseInt(line[22]), false, new Color(Integer.parseInt(line[24])));
 				Circle oldState = (Circle)selected;
-				Circle newState = new Circle(p1, Integer.parseInt(line[24]), true ,new Color(Integer.parseInt(line[26])), new Color(Integer.parseInt(line[28])));
+				Circle newState = new Circle(p1, Integer.parseInt(line[26]), true ,new Color(Integer.parseInt(line[28])), new Color(Integer.parseInt(line[30])));
 				CmdUpdateCircle cmdUpdate = new CmdUpdateCircle(oldState, newState);
 				commandsNormal.push(cmdUpdate);
 				cmdUpdate.execute();
 				
 			} else if (line[1].equals("Donut")) {
 				
-				Point p1 = new Point(Integer.parseInt(line[23]),Integer.parseInt(line[24]));
+				Point p1 = new Point(Integer.parseInt(line[23]),Integer.parseInt(line[24]), false, new Color(Integer.parseInt(line[26])));
 				Donut oldState = (Donut)selected;
-				Donut newState = new Donut(p1, Integer.parseInt(line[26]), Integer.parseInt(line[28]), true, new Color(Integer.parseInt(line[30])), new Color(Integer.parseInt(line[32])));
+				Donut newState = new Donut(p1, Integer.parseInt(line[28]), Integer.parseInt(line[30]), true, new Color(Integer.parseInt(line[32])), new Color(Integer.parseInt(line[34])));
 				CmdUpdateDonut cmdUpdate = new CmdUpdateDonut(oldState, newState);
 				commandsNormal.push(cmdUpdate);
 				cmdUpdate.execute();

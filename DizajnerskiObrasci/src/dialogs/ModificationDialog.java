@@ -245,7 +245,7 @@ public class ModificationDialog extends JDialog{
 			textField.setText(String.valueOf(((Rectangle) shape).getUpperLeftPoint().getX()));
 			textField_1.setText(String.valueOf(((Rectangle) shape).getUpperLeftPoint().getY()));
 			textField_2.setText(String.valueOf(((Rectangle) shape).getWidth()));
-			textField_3.setText(String.valueOf(((Rectangle) shape).getWidth()));
+			textField_3.setText(String.valueOf(((Rectangle) shape).getHeight()));
 			btnBorderColor.setBackground(shape.getBorderColor());
 			btnFillColor.setBackground(shape.getFillColor());
 			
