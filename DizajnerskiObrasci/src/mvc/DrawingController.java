@@ -355,7 +355,9 @@ public class DrawingController {
 	
 	public void setPaintingEmpty() {
 		model.setShapes(new ArrayList<Shape>());
+		model.setSelectedShapes(new ArrayList<Shape>());
 		frame.getView().repaint();
+		
 	}
 	
 	public void loadPainting() {
@@ -385,6 +387,7 @@ public class DrawingController {
 	
 	public void loadLog() {
 		setLoggComm(new LinkedList<String>());
+		setPaintingEmpty();
 		JFileChooser fileCh = new JFileChooser();
 		fileCh.setDialogTitle("Choose log you want to open");
 		fileCh.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -725,8 +728,12 @@ public class DrawingController {
 		propertyChangeSupport.firePropertyChange("modify", false, true);
 		propertyChangeSupport.firePropertyChange("undo", false, true);
 		propertyChangeSupport.firePropertyChange("redo", false, true);*/
+		
 		frame.getView().repaint();
 		frame.getListModel().addElement(getLoggComm().poll().toString());
+		if(getLoggComm().isEmpty()) {
+			frame.getBtnNext().setVisible(false);
+		}
 			
 	}
 	
